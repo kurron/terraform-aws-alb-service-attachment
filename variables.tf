@@ -33,53 +33,37 @@ variable "freetext" {
     description = "Information that does not fit in the other tags"
 }
 
-variable "duty" {
+variable "service_port" {
     type = "string"
-    description = "Special tag value used to locate specific running instances, e.g. Docker or Bastion"
+    description = "Port that the service is exposing to the load balancer, e.g. 8080"
 }
 
-variable "ami_regexp" {
+variable "health_check_path" {
     type = "string"
-    description = "Regular expression to use when looking up an AMI in the specified region"
+    description = "Health endpoint to use, e.g. /operations/health"
 }
 
-variable "ebs_optimized" {
+variable "vpc_id" {
     type = "string"
-    description = "Boolean indicating if the instance should enable EBS optimization or not"
+    description = "ID of the VPC the service lives in."
 }
 
-variable "instance_type" {
+variable "alb_arn" {
     type = "string"
-    description = "They instance type to build the instances from"
+    description = "ARN of the load balancer to attach to."
 }
 
-variable "ssh_key_name" {
-    type = "string"
-    description = "Name of the SSH key to install onto the instances"
-}
-
-variable "security_group_ids" {
+variable "instance_ids" {
     type = "list"
-    description = "List of security groups to apply to the instances"
+    description = "List of EC2 instance IDs that the balancer should forward traffic to."
 }
 
-variable "subnet_ids" {
+variable "security_group_id" {
+    type = "string"
+    description = "ID of the ALB's security group. We'll add an ingress rule for the service port."
+}
+
+variable "ingress_cidrs" {
     type = "list"
-    description = "List of subnets to create the instances in"
-}
-
-variable "instance_profile" {
-    type = "string"
-    description = "ID of the IAM profile to associate with the instances"
-}
-
-variable "scheduled" {
-    type = "string"
-    description = "If set to Yes, the instances will be parked on a schedule"
-}
-
-variable "instance_limit" {
-    type = "string"
-    description = "A number indicating how many instances to create. A value of 0 creates one instance per subnet."
-    default = "0"
+    description = "List of CIDR groups to allow incoming traffic from, e.g. [0.0.0.0/0]"
 }

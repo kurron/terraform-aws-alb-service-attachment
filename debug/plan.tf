@@ -1,5 +1,5 @@
 terraform {
-    required_version = ">= 0.10.6"
+    required_version = ">= 0.10.7"
     backend "s3" {}
 }
 
@@ -21,46 +21,39 @@ data "terraform_remote_state" "security-groups" {
     }
 }
 
-data "terraform_remote_state" "bastion" {
+data "terraform_remote_state" "ec2" {
     backend = "s3"
     config {
         bucket = "transparent-test-terraform-state"
-        key    = "us-west-2/debug/compute/bastion/terraform.tfstate"
+        key    = "us-west-2/debug/compute/ec2/terraform.tfstate"
         region = "us-east-1"
     }
 }
 
-data "terraform_remote_state" "iam" {
+data "terraform_remote_state" "alb" {
     backend = "s3"
     config {
         bucket = "transparent-test-terraform-state"
-        key    = "us-west-2/debug/security/iam/terraform.tfstate"
+        key    = "us-west-2/debug/compute/alb/terraform.tfstate"
         region = "us-east-1"
     }
 }
 
-module "ec2" {
+module "service_attachment" {
     source = "../"
 
-    region                      = "us-west-2"
-    name                        = "Ultron"
-    project                     = "Debug"
-    purpose                     = "Runs Docker containers"
-    creator                     = "kurron@jvmguy.com"
-    environment                 = "development"
-    freetext                    = "No notes at this time."
-    duty                        = "Docker"
-    ami_regexp                  = "^amzn-ami-.*-amazon-ecs-optimized$"
-    ebs_optimized               = "false"
-    instance_type               = "t2.nano"
-    ssh_key_name                = "${data.terraform_remote_state.bastion.ssh_key_name}"
-    security_group_ids          = ["${data.terraform_remote_state.security-groups.ec2_id}"]
-    subnet_ids                  = "${data.terraform_remote_state.vpc.public_subnet_ids}"
-    instance_profile            = "${data.terraform_remote_state.iam.cross_account_ecr_pull_profile_id}"
-    scheduled                   = "Yes"
-    instance_limit              = "0"
-}
-
-output "instance_ids" {
-    value = "${module.ec2.instance_ids}"
+    region            = "us-west-2"
+    name              = "Ultron Service"
+    project           = "Debug"
+    purpose           = "Expose the Ultron Service port to the load balancer"
+    creator           = "kurron@jvmguy.com"
+    environment       = "development"
+    freetext          = "No notes at this time."
+    service_port      = "9999"
+    health_check_path = "/operations/health"
+    vpc_id            = "${data.terraform_remote_state.vpc.vpc_id}"
+    alb_arn           = "${data.terraform_remote_state.alb.alb_arn}"
+    instance_ids      = ["${data.terraform_remote_state.ec2.instance_ids}"]
+    security_group_id = "${data.terraform_remote_state.security-groups.alb_id}"
+    ingress_cidrs     = ["64.222.174.146/32","98.216.147.13/32"]
 }

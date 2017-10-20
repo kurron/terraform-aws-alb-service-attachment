@@ -1,7 +1,6 @@
 # Overview
-This Terraform module creates EC2 instances into the provided subnets.
-The subnet defaults will determine if the instances get public ip address
-or not.
+This Terraform module simplifies the process of adding a new service port to
+an ALB, forwarding traffic to a list of EC2 instances.
 
 # Prerequisites
 * [Terraform](https://terraform.io/) installed and working
@@ -21,10 +20,6 @@ for example usage.
 The `debug` folder contains files that can be used to test out local changes
 to the module.  Edit `backend.cfg` and `plan.tf` to your liking and
 then run `debug/debug-module.sh` to test your changes.
-
-## Limiting Instance Count
-The number of created instances can be controlled by setting `instance_limit`
-to a non `0` value.  A value of `0` results in one instance per subnet.
 
 # Troubleshooting
 
