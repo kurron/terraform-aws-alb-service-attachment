@@ -32,7 +32,7 @@ module "target_group" {
 }
 
 resource "aws_lb_target_group_attachment" "attachment" {
-    count            = "${length( var.instance_ids )}"
+    count            = "${var.instance_count}"
     target_group_arn = "${module.target_group.target_group_arn}"
     target_id        = "${element( var.instance_ids, count.index) }"
     port             = "${var.service_port}"

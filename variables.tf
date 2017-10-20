@@ -58,6 +58,11 @@ variable "instance_ids" {
     description = "List of EC2 instance IDs that the balancer should forward traffic to."
 }
 
+variable "instance_count" {
+    type = "string"
+    description = "The number of instances contained in the instance_ids.  Terraform cannot calculate the value under some circumstances so we must provide it."
+}
+
 variable "security_group_id" {
     type = "string"
     description = "ID of the ALB's security group. We'll add an ingress rule for the service port."
