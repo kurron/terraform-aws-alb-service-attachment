@@ -38,9 +38,23 @@ resource "aws_lb_target_group_attachment" "attachment" {
     port             = "${var.service_port}"
 }
 
+# Recommendation of https://www.terraform.io/docs/providers/aws/r/security_group_rule.html
 resource "aws_security_group_rule" "ingress" {
     type              = "ingress"
-    cidr_blocks       = ["${var.ingress_cidrs}"]
+    cidr_blocks       = ["0.0.0.0/0"]
+    from_port         = "${var.service_port}"
+    protocol          = "tcp"
+    security_group_id = "${var.security_group_id}"
+    to_port           = "${var.service_port}"
+    description       = "HTTP access to ${var.name}"
+    lifecycle {
+        create_before_destroy = true
+    }
+}
+
+resource "aws_security_group_rule" "egress" {
+    type              = "egress"
+    cidr_blocks       = ["${var.vpc_cidr}"]
     from_port         = "${var.service_port}"
     protocol          = "tcp"
     security_group_id = "${var.security_group_id}"
