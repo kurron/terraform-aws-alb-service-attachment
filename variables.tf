@@ -68,7 +68,7 @@ variable "security_group_id" {
     description = "ID of the ALB's security group. We'll add an ingress rule for the service port."
 }
 
-variable "ingress_cidrs" {
+variable "vpc_cidr" {
     type = "list"
-    description = "List of CIDR groups to allow incoming traffic from, e.g. [0.0.0.0/0]"
+    description = "CIDR range of VPC.  Ensures traffic only flows to the VPC, e.g. [10.20.0.0/16]"
 }

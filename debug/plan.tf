@@ -56,5 +56,5 @@ module "service_attachment" {
     instance_ids      = ["${data.terraform_remote_state.ec2.instance_ids}"]
     instance_count    = "${length( data.terraform_remote_state.ec2.instance_ids )}"
     security_group_id = "${data.terraform_remote_state.security-groups.alb_id}"
-    ingress_cidrs     = ["64.222.174.146/32","98.216.147.13/32"]
+    vpc_cidr          = ["${data.terraform_remote_state.vpc.cidr}"]
 }
