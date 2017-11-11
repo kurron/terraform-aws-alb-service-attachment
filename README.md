@@ -1,6 +1,9 @@
 # Overview
 This Terraform module simplifies the process of adding a new service port to
-an ALB, forwarding traffic to a list of EC2 instances.
+an ALB, forwarding traffic to a list of EC2 instances.  It creates a new
+Target Group listening on the specified port, binding the specified EC2 instances
+to the group.  This module should **not** be used when configuring an ECS
+environment, since ECS manages the registration of containers to the target group.
 
 # Prerequisites
 * [Terraform](https://terraform.io/) installed and working
