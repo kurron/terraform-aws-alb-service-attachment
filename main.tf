@@ -8,7 +8,7 @@ provider "aws" {
 }
 
 module "target_group" {
-    source = "github.com/kurron/terraform-aws-alb-target-group"
+    source = "kurron/alb-target-group/aws"
 
     region                         = "${var.region}"
     name                           = "${var.name}"
